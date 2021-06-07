@@ -13,15 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const languageEntryPoints_1 = __importDefault(require("../../EntryPoints/languageEntryPoints"));
 const app = express_1.default();
-const languageManagement_1 = __importDefault(require("../../EntryPoints/languageManagement"));
 var cors = require("cors");
 app.use(cors({
     origin: "*",
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
-app.use(languageManagement_1.default);
+app.use(languageEntryPoints_1.default);
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         yield app.listen(4000);
