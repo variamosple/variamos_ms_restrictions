@@ -18,7 +18,7 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT * FROM "Variamos"."languageRegistry"'
+        'SELECT * FROM "Variamos"."language"'
       );
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
@@ -44,9 +44,8 @@ export default class LanguageManagement {
     res: Response
   ): Promise<Response> => {
     try {
-      console.log(req.params.type);
       const response: QueryResult = await pool.query(
-        'SELECT * FROM "Variamos"."languageRegistry" WHERE type=upper(\'' +
+        'SELECT * FROM "Variamos"."language" WHERE type=upper(\'' +
           req.params.type +
           "')"
       );
@@ -72,7 +71,7 @@ export default class LanguageManagement {
   getLanguages = async (_req: Request, res: Response): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT id, name, type FROM "Variamos"."languageRegistry"'
+        'SELECT id, name, type FROM "Variamos"."language"'
       );
 
       const responseApi = new ResponseAPISuccess();
@@ -100,7 +99,7 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT id, name, type FROM "Variamos"."languageRegistry" WHERE type=upper(\'' +
+        'SELECT id, name, type FROM "Variamos"."language" WHERE type=upper(\'' +
           req.params.type +
           "')"
       );
@@ -147,7 +146,7 @@ export default class LanguageManagement {
         );
 
       const response: QueryResult = await pool.query(
-        'INSERT INTO "Variamos"."languageRegistry"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4);',
+        'INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4, "PENDING");',
         [
           language.name,
           language.abstractSyntax,
@@ -183,7 +182,7 @@ export default class LanguageManagement {
       language.id = parseInt(req.params.id);
 
       const response: QueryResult = await pool.query(
-        'UPDATE "Variamos"."languageRegistry" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4 WHERE id = $5',
+        'UPDATE "Variamos"."language" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4 WHERE id = $5',
         [
           language.name,
           language.abstractSyntax,
@@ -217,7 +216,7 @@ export default class LanguageManagement {
       const id = parseInt(req.params.id);
 
       const response: QueryResult = await pool.query(
-        'DELETE FROM "Variamos"."languageRegistry" WHERE id= $1;',
+        'DELETE FROM "Variamos"."language" WHERE id= $1;',
         [id]
       );
 

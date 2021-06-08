@@ -22,7 +22,7 @@ class LanguageManagement {
     constructor() {
         this.getDetailLanguages = (_req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield VariamosDB_1.pool.query('SELECT * FROM "Variamos"."languageRegistry"');
+                const response = yield VariamosDB_1.pool.query('SELECT * FROM "Variamos"."language"');
                 const responseApi = new response_1.ResponseAPISuccess();
                 responseApi.message = "Language were found successfully";
                 responseApi.data = JSON.parse(JSON.stringify(response.rows));
@@ -40,8 +40,7 @@ class LanguageManagement {
         });
         this.getDetailLanguageByType = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.params.type);
-                const response = yield VariamosDB_1.pool.query('SELECT * FROM "Variamos"."languageRegistry" WHERE type=upper(\'' +
+                const response = yield VariamosDB_1.pool.query('SELECT * FROM "Variamos"."language" WHERE type=upper(\'' +
                     req.params.type +
                     "')");
                 const responseApi = new response_1.ResponseAPISuccess();
@@ -61,7 +60,7 @@ class LanguageManagement {
         });
         this.getLanguages = (_req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield VariamosDB_1.pool.query('SELECT id, name, type FROM "Variamos"."languageRegistry"');
+                const response = yield VariamosDB_1.pool.query('SELECT id, name, type FROM "Variamos"."language"');
                 const responseApi = new response_1.ResponseAPISuccess();
                 responseApi.message = "Language were found successfully";
                 responseApi.data = JSON.parse(JSON.stringify(response.rows));
@@ -79,7 +78,7 @@ class LanguageManagement {
         });
         this.getLanguageByType = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield VariamosDB_1.pool.query('SELECT id, name, type FROM "Variamos"."languageRegistry" WHERE type=upper(\'' +
+                const response = yield VariamosDB_1.pool.query('SELECT id, name, type FROM "Variamos"."language" WHERE type=upper(\'' +
                     req.params.type +
                     "')");
                 const responseApi = new response_1.ResponseAPISuccess();
@@ -111,7 +110,7 @@ class LanguageManagement {
                 if (!valid)
                     throw new Error("Something wrong in data definition. Validate: " +
                         JSON.stringify(validate.errors));
-                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."languageRegistry"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4);', [
+                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4);', [
                     language.name,
                     language.abstractSyntax,
                     language.concreteSyntax,
@@ -137,7 +136,7 @@ class LanguageManagement {
                 let language = new Language_1.Language();
                 language = Object.assign(language, req.body);
                 language.id = parseInt(req.params.id);
-                const response = yield VariamosDB_1.pool.query('UPDATE "Variamos"."languageRegistry" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4 WHERE id = $5', [
+                const response = yield VariamosDB_1.pool.query('UPDATE "Variamos"."language" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4 WHERE id = $5', [
                     language.name,
                     language.abstractSyntax,
                     language.concreteSyntax,
@@ -162,7 +161,7 @@ class LanguageManagement {
         this.deleteLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const id = parseInt(req.params.id);
-                const response = yield VariamosDB_1.pool.query('DELETE FROM "Variamos"."languageRegistry" WHERE id= $1;', [id]);
+                const response = yield VariamosDB_1.pool.query('DELETE FROM "Variamos"."language" WHERE id= $1;', [id]);
                 const responseApi = new response_1.ResponseAPISuccess();
                 responseApi.message = "Language deleted successfully";
                 responseApi.transactionId = "deleteLanguage_";

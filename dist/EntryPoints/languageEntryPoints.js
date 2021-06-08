@@ -8,8 +8,8 @@ const languageUseCases_1 = __importDefault(require("../Domain/Language/languageU
 const router = express_1.Router();
 let _LanguageManagement = new languageUseCases_1.default();
 router.get("/languages", _LanguageManagement.getLanguages);
-router.get("/languages/:type", _LanguageManagement.getLanguageByType);
 router.get("/languages/detail", _LanguageManagement.getDetailLanguages);
+router.get("/languages/:type", _LanguageManagement.getLanguageByType);
 router.get("/languages/:type/detail", _LanguageManagement.getDetailLanguageByType);
 router.post("/languages", _LanguageManagement.createLanguage);
 router.put("/languages/:id", _LanguageManagement.updateLanguage);

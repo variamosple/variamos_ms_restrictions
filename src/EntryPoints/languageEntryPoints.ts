@@ -5,8 +5,9 @@ const router = Router();
 let _LanguageManagement = new LanguageManagement();
 
 router.get("/languages", _LanguageManagement.getLanguages);
-router.get("/languages/:type", _LanguageManagement.getLanguageByType);
 router.get("/languages/detail", _LanguageManagement.getDetailLanguages);
+router.get("/languages/:type", _LanguageManagement.getLanguageByType);
+
 router.get(
   "/languages/:type/detail",
   _LanguageManagement.getDetailLanguageByType
