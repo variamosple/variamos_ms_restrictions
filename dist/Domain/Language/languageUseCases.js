@@ -20,6 +20,22 @@ const Language_1 = require("./Entities/Language");
 const ajv = new ajv_1.default();
 class LanguageManagement {
     constructor() {
+        this.testcicd = (_req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseApi = new response_1.ResponseAPISuccess();
+                responseApi.message = "Test CI CD successfully";
+                responseApi.transactionId = "testcicd_";
+                return res.status(200).json(responseApi);
+            }
+            catch (e) {
+                const responseApi = new response_1.ResponseAPIError();
+                responseApi.message = "Internal Server Error";
+                responseApi.errorCode = "00";
+                responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
+                responseApi.transactionId = "getLanguages_";
+                return res.status(500).json(responseApi);
+            }
+        });
         this.getDetailLanguages = (_req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield VariamosDB_1.pool.query('SELECT * FROM "Variamos"."language"');
@@ -110,7 +126,7 @@ class LanguageManagement {
                 if (!valid)
                     throw new Error("Something wrong in data definition. Validate: " +
                         JSON.stringify(validate.errors));
-                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4);', [
+                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4, "PENDING");', [
                     language.name,
                     language.abstractSyntax,
                     language.concreteSyntax,
