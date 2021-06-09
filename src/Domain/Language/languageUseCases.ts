@@ -12,25 +12,25 @@ import { Language, LanguageSchema } from "./Entities/Language";
 const ajv = new Ajv();
 
 export default class LanguageManagement {
-  testcicd = async (_req: Request, res: Response): Promise<Response> => {
-    try {
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Test CI CD successfully";
-      responseApi.transactionId = "testcicd_";
+  // testcicd = async (_req: Request, res: Response): Promise<Response> => {
+  //   try {
+  //     const responseApi = new ResponseAPISuccess();
+  //     responseApi.message = "Test CI CD successfully";
+  //     responseApi.transactionId = "testcicd_";
 
-      return res.status(200).json(responseApi);
-    } catch (e) {
-      const responseApi = new ResponseAPIError();
-      responseApi.message = "Internal Server Error";
-      responseApi.errorCode = "00";
-      responseApi.data = JSON.parse(
-        JSON.stringify("{ messageError: " + e + " }")
-      );
-      responseApi.transactionId = "getLanguages_";
+  //     return res.status(200).json(responseApi);
+  //   } catch (e) {
+  //     const responseApi = new ResponseAPIError();
+  //     responseApi.message = "Internal Server Error";
+  //     responseApi.errorCode = "00";
+  //     responseApi.data = JSON.parse(
+  //       JSON.stringify("{ messageError: " + e + " }")
+  //     );
+  //     responseApi.transactionId = "getLanguages_";
 
-      return res.status(500).json(responseApi);
-    }
-  };
+  //     return res.status(500).json(responseApi);
+  //   }
+  // };
 
   getDetailLanguages = async (
     _req: Request,
