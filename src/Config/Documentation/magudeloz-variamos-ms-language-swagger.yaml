@@ -67,6 +67,8 @@ paths:
       summary: Update language by Id 
       operationId: updateLanguage
       description: By passing in the appropriate options, you can update language in the VariaMos data base.
+      requestBody:
+        $ref: '#/components/requestBodies/postRequestUpdate'
       parameters:
         - name: languageId
           in: path
@@ -80,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponsesDetail'
+                $ref: '#/components/schemas/ResponsesDetailObject'
         '500':
           description: Internal Server Error  
           content:
@@ -227,6 +229,13 @@ components:
           type: string
         data:
           $ref: '#/components/schemas/CreateLanguageItem'
+    putRequestUpdate:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        data:
+          $ref: '#/components/schemas/UpdateLanguageItem'
     getResponses:
       type: object
       properties:
@@ -249,6 +258,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LanguageDetailItem'
+    ResponsesDetailObject:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        message:
+          type: string
+        data: 
+          $ref: '#/components/schemas/LanguageDetailItem'
     LanguageItem:
       type: object
       properties:
@@ -277,6 +295,27 @@ components:
         type: 
           type: string
           example: DOMAIN
+        stateAccept: 
+          type: string
+          example: PENDING
+    UpdateLanguageItem:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Feature
+        abstractSyntax:
+          type: object
+          example: {  }
+        concreteSyntax:
+          type: object
+          example: {  }  
+        type: 
+          type: string
+          example: DOMAIN
+        stateAccept: 
+          type: string
+          example: PENDING
     CreateLanguageItem:
       type: object
       properties:
@@ -302,6 +341,16 @@ components:
           schema:
             $ref: '#/components/schemas/postRequestCreate'
       description: Language object that needs to be added to the variamos data base.
+      required: true
+    postRequestUpdate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/putRequestUpdate'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/putRequestUpdate'
+      description: Language object that needs to be updated to the variamos data base.
       required: true
 externalDocs:
   description: View code on github

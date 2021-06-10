@@ -126,7 +126,7 @@ class LanguageManagement {
                 if (!valid)
                     throw new Error("Something wrong in data definition. Validate: " +
                         JSON.stringify(validate.errors));
-                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4, "PENDING");', [
+                const response = yield VariamosDB_1.pool.query('INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type, "stateAccept") VALUES (default,  $1, $2, $3, $4, \'PENDING\');', [
                     language.name,
                     language.abstractSyntax,
                     language.concreteSyntax,

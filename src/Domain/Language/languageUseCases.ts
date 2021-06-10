@@ -166,12 +166,13 @@ export default class LanguageManagement {
         );
 
       const response: QueryResult = await pool.query(
-        'INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type) VALUES (default,  $1, $2, $3, $4, "PENDING");',
+        'INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type, "stateAccept") VALUES (default,  $1, $2, $3, $4, \'PENDING\');',
         [
           language.name,
           language.abstractSyntax,
           language.concreteSyntax,
           language.type,
+          language.stateAccept = "PENDING"
         ]
       );
 
@@ -202,12 +203,13 @@ export default class LanguageManagement {
       language.id = parseInt(req.params.id);
 
       const response: QueryResult = await pool.query(
-        'UPDATE "Variamos"."language" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4 WHERE id = $5',
+        'UPDATE "Variamos"."language" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
         [
           language.name,
           language.abstractSyntax,
           language.concreteSyntax,
           language.type,
+          language.stateAccept,
           language.id,
         ]
       );
