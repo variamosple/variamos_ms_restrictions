@@ -12,21 +12,29 @@ import { Language, LanguageSchema } from "./Entities/Language";
 const ajv = new Ajv();
 
 export default class LanguageManagement {
-  testcicd = async (_req: Request, res: Response): Promise<Response> => {
+  getExternalFuntions = async (
+    req: Request,
+    res: Response
+  ): Promise<Response> => {
     try {
+      const response: QueryResult = await pool.query(
+        "SELECT * FROM variamos.external_function WHERE language_id=" +
+          req.params.type
+      );
       const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Test CI CD successfully";
-      responseApi.transactionId = "testcicd_";
+      responseApi.message = "External functions were found successfully";
+      responseApi.data = JSON.parse(JSON.stringify(response.rows));
+      responseApi.transactionId = "getExternalFuntions_";
 
       return res.status(200).json(responseApi);
     } catch (e) {
       const responseApi = new ResponseAPIError();
       responseApi.message = "Internal Server Error";
-      responseApi.errorCode = "00";
+      responseApi.errorCode = "08";
       responseApi.data = JSON.parse(
         JSON.stringify("{ messageError: " + e + " }")
       );
-      responseApi.transactionId = "getLanguages_";
+      responseApi.transactionId = "getExternalFuntions_";
 
       return res.status(500).json(responseApi);
     }
@@ -38,7 +46,7 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT * FROM "Variamos"."language"'
+        "SELECT * FROM variamos.language"
       );
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
@@ -65,7 +73,7 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT * FROM "Variamos"."language" WHERE type=upper(\'' +
+        "SELECT * FROM variamos.language WHERE type=upper('" +
           req.params.type +
           "')"
       );
@@ -91,7 +99,7 @@ export default class LanguageManagement {
   getLanguages = async (_req: Request, res: Response): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT id, name, type FROM "Variamos"."language"'
+        "SELECT id, name, type FROM variamos.language"
       );
 
       const responseApi = new ResponseAPISuccess();
@@ -119,7 +127,7 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        'SELECT id, name, type FROM "Variamos"."language" WHERE type=upper(\'' +
+        "SELECT id, name, type FROM variamos.language WHERE type=upper('" +
           req.params.type +
           "')"
       );
@@ -166,13 +174,13 @@ export default class LanguageManagement {
         );
 
       const response: QueryResult = await pool.query(
-        'INSERT INTO "Variamos"."language"(id, name, "abstractSyntax", "concreteSyntax", type, "stateAccept") VALUES (default,  $1, $2, $3, $4, \'PENDING\');',
+        'INSERT INTO variamos.language(id, name, "abstractSyntax", "concreteSyntax", type, "stateAccept") VALUES (default,  $1, $2, $3, $4, \'PENDING\');',
         [
           language.name,
           language.abstractSyntax,
           language.concreteSyntax,
           language.type,
-          language.stateAccept = "PENDING"
+          (language.stateAccept = "PENDING"),
         ]
       );
 
@@ -203,7 +211,7 @@ export default class LanguageManagement {
       language.id = parseInt(req.params.id);
 
       const response: QueryResult = await pool.query(
-        'UPDATE "Variamos"."language" SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
+        'UPDATE variamos.language SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
         [
           language.name,
           language.abstractSyntax,
@@ -238,7 +246,7 @@ export default class LanguageManagement {
       const id = parseInt(req.params.id);
 
       const response: QueryResult = await pool.query(
-        'DELETE FROM "Variamos"."language" WHERE id= $1;',
+        "DELETE FROM variamos.language WHERE id= $1;",
         [id]
       );
 
