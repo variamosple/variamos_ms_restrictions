@@ -14,7 +14,7 @@ router.get(
 );
 
 router.get(
-  "/languages/:id/externalfunctions",
+  "/languages/:languageName/externalfunctions",
   _LanguageManagement.getExternalFuntions
 );
 

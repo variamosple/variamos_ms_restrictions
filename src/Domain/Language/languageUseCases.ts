@@ -18,8 +18,8 @@ export default class LanguageManagement {
   ): Promise<Response> => {
     try {
       const response: QueryResult = await pool.query(
-        "SELECT * FROM variamos.external_function WHERE language_id=" +
-          req.params.type
+        "SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.request,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
+          req.params.languageName + "'"
       );
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "External functions were found successfully";

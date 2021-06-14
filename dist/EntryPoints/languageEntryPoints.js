@@ -11,7 +11,7 @@ router.get("/languages", _LanguageManagement.getLanguages);
 router.get("/languages/detail", _LanguageManagement.getDetailLanguages);
 router.get("/languages/:type", _LanguageManagement.getLanguageByType);
 router.get("/languages/:type/detail", _LanguageManagement.getDetailLanguageByType);
-router.get("/languages/:id/externalfunctions", _LanguageManagement.getExternalFuntions);
+router.get("/languages/:languageName/externalfunctions", _LanguageManagement.getExternalFuntions);
 router.post("/languages", _LanguageManagement.createLanguage);
 router.put("/languages/:id", _LanguageManagement.updateLanguage);
 router.delete("/languages/:id", _LanguageManagement.deleteLanguage);
