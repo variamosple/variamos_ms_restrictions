@@ -2,14 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExternalFunctionSchema = exports.ExternalFuntion = void 0;
 class ExternalFuntion {
-    constructor(id, name, label, url, method, header, request, resulting_action, language_id) {
+    constructor(id, name, label, url, method, header, resulting_action, language_id) {
         this.id = id;
         this.name = name;
         this.label = label;
         this.url = url;
         this.method = method;
         this.header = header;
-        this.request = request;
         this.resulting_action = resulting_action;
         this.language_id = language_id;
     }

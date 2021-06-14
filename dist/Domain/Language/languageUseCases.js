@@ -22,8 +22,9 @@ class LanguageManagement {
     constructor() {
         this.getExternalFuntions = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield VariamosDB_1.pool.query("SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.request,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
-                    req.params.languageName + "'");
+                const response = yield VariamosDB_1.pool.query("SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
+                    req.params.languageName +
+                    "'");
                 const responseApi = new response_1.ResponseAPISuccess();
                 responseApi.message = "External functions were found successfully";
                 responseApi.data = JSON.parse(JSON.stringify(response.rows));
