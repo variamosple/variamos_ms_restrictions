@@ -191,8 +191,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responseError'
+  '/languages/{languageName}/externalfunctions':
+    get:
+      tags:
+        - Users
+      summary: search external functions by language name 
+      operationId: getExternalFuntions
+      description: By passing in the appropriate options, you can search for available external functions in the VariaMos data base.
+      parameters:
+        - name: languageName
+          in: path
+          description: Name of language
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results external functions matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseExternalFunction'
+        '500':
+          description: Internal Server Error  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseError'
 components:
   schemas:
+    ResponseExternalFunction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        message:
+          type: string
+        data: 
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalFunctionItem'
     postResponseDelete:
       type: object
       properties:
@@ -298,6 +336,23 @@ components:
         stateAccept: 
           type: string
           example: PENDING
+    ExternalFunctionItem:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        url:
+          type: string
+        method:
+          type: string
+        header: 
+          type: object
+        resulting_action: 
+          type: string
+        language_id:
+          type: number
     UpdateLanguageItem:
       type: object
       properties:
