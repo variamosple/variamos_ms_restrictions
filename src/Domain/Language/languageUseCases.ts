@@ -180,7 +180,6 @@ export default class LanguageManagement {
           language.abstractSyntax,
           language.concreteSyntax,
           language.type,
-          (language.stateAccept = "PENDING"),
         ]
       );
 
