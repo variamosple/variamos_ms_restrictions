@@ -35,7 +35,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "getExternalFuntions_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -62,7 +62,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "getDetailLanguages_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -91,7 +91,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "getDetailLanguageByType_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -116,7 +116,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "getLanguages_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -146,7 +146,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "getLanguageByType_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -198,7 +198,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "createLanguage_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -236,7 +236,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "updateLanguage_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
@@ -263,7 +263,7 @@ export default class LanguageManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId = "deleteLanguage_";
-
+      console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
   };
