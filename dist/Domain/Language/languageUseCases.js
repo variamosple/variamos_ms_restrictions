@@ -37,6 +37,7 @@ class LanguageManagement {
                 responseApi.errorCode = "08";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "getExternalFuntions_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -55,6 +56,7 @@ class LanguageManagement {
                 responseApi.errorCode = "03";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "getDetailLanguages_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -75,6 +77,7 @@ class LanguageManagement {
                 responseApi.errorCode = "04";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "getDetailLanguageByType_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -93,6 +96,7 @@ class LanguageManagement {
                 responseApi.errorCode = "05";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "getLanguages_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -113,6 +117,7 @@ class LanguageManagement {
                 responseApi.errorCode = "06";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "getLanguageByType_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -135,7 +140,6 @@ class LanguageManagement {
                     language.abstractSyntax,
                     language.concreteSyntax,
                     language.type,
-                    (language.stateAccept = "PENDING"),
                 ]);
                 const responseApi = new response_1.ResponseAPISuccess();
                 responseApi.message = "Language created successfully";
@@ -149,14 +153,25 @@ class LanguageManagement {
                 responseApi.errorCode = "01";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "createLanguage_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
         this.updateLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                let validate = ajv.compile(request_1.RequestApiSchema);
+                let valid = validate(req.body);
+                if (!valid)
+                    throw new Error("Something wrong in request definition. Validate: " +
+                        JSON.stringify(validate.errors));
                 let language = new Language_1.Language();
-                language = Object.assign(language, req.body);
+                language = Object.assign(language, req.body.data);
                 language.id = parseInt(req.params.id);
+                validate = ajv.compile(Language_1.LanguageSchema);
+                valid = validate(req.body.data);
+                if (!valid)
+                    throw new Error("Something wrong in data definition. Validate: " +
+                        JSON.stringify(validate.errors));
                 const response = yield VariamosDB_1.pool.query('UPDATE variamos.language SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6', [
                     language.name,
                     language.abstractSyntax,
@@ -177,6 +192,7 @@ class LanguageManagement {
                 responseApi.errorCode = "02";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "updateLanguage_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });
@@ -195,6 +211,7 @@ class LanguageManagement {
                 responseApi.errorCode = "07";
                 responseApi.data = JSON.parse(JSON.stringify("{ messageError: " + e + " }"));
                 responseApi.transactionId = "deleteLanguage_";
+                console.log(JSON.stringify(responseApi));
                 return res.status(500).json(responseApi);
             }
         });

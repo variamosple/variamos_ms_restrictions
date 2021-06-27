@@ -204,10 +204,26 @@ export default class LanguageManagement {
 
   updateLanguage = async (req: Request, res: Response): Promise<Response> => {
     try {
-      let language: Language = new Language();
+      let validate = ajv.compile(RequestApiSchema);
+      let valid = validate(req.body);
 
-      language = Object.assign(language, req.body);
+      if (!valid)
+        throw new Error(
+          "Something wrong in request definition. Validate: " +
+            JSON.stringify(validate.errors)
+        );
+
+      let language: Language = new Language();
+      language = Object.assign(language, req.body.data);
       language.id = parseInt(req.params.id);
+
+      validate = ajv.compile(LanguageSchema);
+      valid = validate(req.body.data);
+      if (!valid)
+        throw new Error(
+          "Something wrong in data definition. Validate: " +
+            JSON.stringify(validate.errors)
+        );
 
       const response: QueryResult = await pool.query(
         'UPDATE variamos.language SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
