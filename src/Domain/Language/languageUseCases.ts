@@ -12,34 +12,6 @@ import { Language, LanguageSchema } from "./Entities/Language";
 const ajv = new Ajv();
 
 export default class LanguageManagement {
-  getExternalFuntions = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
-    try {
-      const response: QueryResult = await pool.query(
-        "SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
-          req.params.languageName +
-          "'"
-      );
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "External functions were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
-      responseApi.transactionId = "getExternalFuntions_";
-      return res.status(200).json(responseApi);
-    } catch (e) {
-      const responseApi = new ResponseAPIError();
-      responseApi.message = "Internal Server Error";
-      responseApi.errorCode = "08";
-      responseApi.data = JSON.parse(
-        JSON.stringify("{ messageError: " + e + " }")
-      );
-      responseApi.transactionId = "getExternalFuntions_";
-      console.log(JSON.stringify(responseApi));
-      return res.status(500).json(responseApi);
-    }
-  };
-
   getDetailLanguages = async (
     _req: Request,
     res: Response

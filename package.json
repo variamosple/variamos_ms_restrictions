@@ -24,7 +24,14 @@
     "express": "^4.17.1",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.6.2",
-    "tedious": "^11.0.9"
-  }
+    "sequelize": "^6.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauroagudeloz/VariaMosMicroservice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mauroagudeloz/VariaMosMicroservice/issues"
+  },
+  "homepage": "https://github.com/mauroagudeloz/VariaMosMicroservice#readme"
 }
