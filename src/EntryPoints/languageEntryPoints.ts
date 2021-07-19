@@ -19,22 +19,22 @@ router.get(
 );
 
 router.get(
-  "/languages/:languageName/externalfunctions",
+  "/languages/:languageId/externalfunctions",
   _ExternalFunctionManagement.getExternalFuntions
 );
 
 router.post(
-  "/languages/:languageName/externalfunctions",
+  "/languages/:languageId/externalfunctions",
   _ExternalFunctionManagement.createExternalFunction
 );
 
 router.put(
-  "/languages/:languageName/externalfunctions/:exid",
+  "/externalfunctions/:exid",
   _ExternalFunctionManagement.updateExternalFunction
 );
 
 router.delete(
-  "/languages/:languageName/externalfunctions/:exid",
+  "/externalfunctions/:exid",
   _ExternalFunctionManagement.deleteExternalFunction
 );
 

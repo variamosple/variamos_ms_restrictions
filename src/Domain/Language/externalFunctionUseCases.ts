@@ -13,25 +13,30 @@ import {
   OrmExternalFunction,
 } from "./Entities/ExternalFuntion";
 import { Language, OrmLanguage } from "./Entities/Language";
+import { where } from "sequelize/types";
 
 const ajv = new Ajv();
 
 export default class ExternalFunctionManagement {
-  getExternalFuntions = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
+  getExternalFuntions = async (req: Request, res: Response) => {
     try {
-      const response: QueryResult = await pool.query(
-        "SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
-          req.params.languageName +
-          "'"
-      );
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "External functions were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
-      responseApi.transactionId = "getExternalFuntions_";
-      return res.status(200).json(responseApi);
+      const searchExternalFunctions = (await OrmExternalFunction.findAll({
+        where: { language_id: req.params.languageId },
+      })) as ExternalFunction;
+
+      // const response: QueryResult = await pool.query(
+      //   "SELECT external_function.id, external_function.name, external_function.label, external_function.url, external_function.language_id, external_function.method, external_function.header,external_function.resulting_action FROM variamos.external_function INNER JOIN variamos.language ON variamos.external_function.language_id = variamos.language.id WHERE variamos.language.name='" +
+      //     req.params.languageName +
+      //     "'"
+      // );
+
+      if (searchExternalFunctions) {
+        const responseApi = new ResponseAPISuccess();
+        responseApi.message = "External functions were found successfully";
+        responseApi.data = JSON.parse(JSON.stringify(searchExternalFunctions));
+        responseApi.transactionId = "getExternalFuntions_";
+        return res.status(200).json(responseApi);
+      }
     } catch (e) {
       const responseApi = new ResponseAPIError();
       responseApi.message = "Internal Server Error";
@@ -68,11 +73,7 @@ export default class ExternalFunctionManagement {
             JSON.stringify(validate.errors)
         );
 
-      const searchLanguage = (await OrmLanguage.findOne({
-        where: { name: req.params.languageName },
-      })) as Language;
-
-      extFunction.language_id = searchLanguage.id;
+      extFunction.language_id = parseInt(req.params.languageId);
 
       let newExFunction = await OrmExternalFunction.create(extFunction, {
         fields: [
@@ -108,10 +109,7 @@ export default class ExternalFunctionManagement {
     }
   };
 
-  updateExternalFunction = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
+  updateExternalFunction = async (req: Request, res: Response) => {
     try {
       let validate = ajv.compile(RequestApiSchema);
       let valid = validate(req.body);
@@ -124,7 +122,7 @@ export default class ExternalFunctionManagement {
 
       let extFunction: ExternalFunction = new ExternalFunction();
       extFunction = Object.assign(extFunction, req.body.data);
-      extFunction.id = parseInt(req.params.id);
+      extFunction.id = parseInt(req.params.exid);
 
       validate = ajv.compile(ExternalFunctionSchema);
       valid = validate(req.body.data);
@@ -135,17 +133,24 @@ export default class ExternalFunctionManagement {
             JSON.stringify(validate.errors)
         );
 
-      //   const response: QueryResult = await pool.query(
-      //     'UPDATE variamos.language SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
-      //     [
-      //       language.name,
-      //       language.abstractSyntax,
-      //       language.concreteSyntax,
-      //       language.type,
-      //       language.stateAccept,
-      //       language.id,
-      //     ]
-      //   );
+      let newExFunction = await OrmExternalFunction.update(
+        {
+          name: extFunction.name,
+          label: extFunction.label,
+          url: extFunction.url,
+          method: extFunction.method,
+          header: extFunction.header,
+          request: extFunction.request,
+          resulting_action: extFunction.resulting_action,
+          language_id: extFunction.language_id,
+        },
+        {
+          where: { id: extFunction.id },
+        }
+      );
+
+      if (newExFunction.toString() === "0")
+        throw new Error("Something wrong, External function not found.");
 
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "External function updated successfully";
@@ -166,23 +171,21 @@ export default class ExternalFunctionManagement {
     }
   };
 
-  deleteExternalFunction = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
+  deleteExternalFunction = async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      // const id = parseInt(req.params.exid);
 
-      const response: QueryResult = await pool.query(
-        "DELETE FROM variamos.external_function WHERE id= $1;",
-        [id]
-      );
+      const deleteExternalFunction = (await OrmExternalFunction.destroy({
+        where: { id: req.params.exid },
+      })) as ExternalFunction;
 
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "External function deleted successfully";
-      responseApi.transactionId = "deleteExternalFUnction_";
+      if (deleteExternalFunction) {
+        const responseApi = new ResponseAPISuccess();
+        responseApi.message = "External function deleted successfully";
+        responseApi.transactionId = "deleteExternalFUnction_";
 
-      return res.status(200).json(responseApi);
+        return res.status(200).json(responseApi);
+      }
     } catch (e) {
       const responseApi = new ResponseAPIError();
       responseApi.message = "Internal Server Error";
