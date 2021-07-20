@@ -7,7 +7,7 @@ import {
   ResponseAPIError,
   ResponseAPISuccess,
 } from "../Init/entities/response";
-import { Language, LanguageSchema } from "./Entities/Language";
+import { Language, LanguageSchema, OrmLanguage } from "./Entities/Language";
 
 const ajv = new Ajv();
 
@@ -17,12 +17,11 @@ export default class LanguageManagement {
     res: Response
   ): Promise<Response> => {
     try {
-      const response: QueryResult = await pool.query(
-        "SELECT * FROM variamos.language"
-      );
+      const searchLanguage = (await OrmLanguage.findAll()) as Language;
+
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
+      responseApi.data = JSON.parse(JSON.stringify(searchLanguage));
       responseApi.transactionId = "getDetailLanguages_";
 
       return res.status(200).json(responseApi);
@@ -44,14 +43,13 @@ export default class LanguageManagement {
     res: Response
   ): Promise<Response> => {
     try {
-      const response: QueryResult = await pool.query(
-        "SELECT * FROM variamos.language WHERE type=upper('" +
-          req.params.type +
-          "')"
-      );
+      const searchLanguageByType = (await OrmLanguage.findAll({
+        where: { type: req.params.type.toUpperCase() },
+      })) as Language;
+
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
+      responseApi.data = JSON.parse(JSON.stringify(searchLanguageByType));
       responseApi.transactionId = "getDetailLanguageByType_";
 
       return res.status(200).json(responseApi);
@@ -70,13 +68,13 @@ export default class LanguageManagement {
 
   getLanguages = async (_req: Request, res: Response): Promise<Response> => {
     try {
-      const response: QueryResult = await pool.query(
-        "SELECT id, name, type FROM variamos.language"
-      );
+      const searchLanguage = (await OrmLanguage.findAll({
+        attributes: ["id", "name", "type"],
+      })) as Language;
 
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
+      responseApi.data = JSON.parse(JSON.stringify(searchLanguage));
       responseApi.transactionId = "getLanguages_";
 
       return res.status(200).json(responseApi);
@@ -98,15 +96,14 @@ export default class LanguageManagement {
     res: Response
   ): Promise<Response> => {
     try {
-      const response: QueryResult = await pool.query(
-        "SELECT id, name, type FROM variamos.language WHERE type=upper('" +
-          req.params.type +
-          "')"
-      );
+      const searchLanguageByType = (await OrmLanguage.findAll({
+        attributes: ["id", "name", "type"],
+        where: { type: req.params.type.toUpperCase() },
+      })) as Language;
 
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language were found successfully";
-      responseApi.data = JSON.parse(JSON.stringify(response.rows));
+      responseApi.data = JSON.parse(JSON.stringify(searchLanguageByType));
       responseApi.transactionId = "getLanguageByType_";
 
       return res.status(200).json(responseApi);
@@ -145,22 +142,18 @@ export default class LanguageManagement {
             JSON.stringify(validate.errors)
         );
 
-      const response: QueryResult = await pool.query(
-        'INSERT INTO variamos.language(id, name, "abstractSyntax", "concreteSyntax", type, "stateAccept") VALUES (default,  $1, $2, $3, $4, \'PENDING\');',
-        [
-          language.name,
-          language.abstractSyntax,
-          language.concreteSyntax,
-          language.type,
-        ]
-      );
+      let newLanguage = await OrmLanguage.create(language, {
+        fields: ["name", "abstractSyntax", "concreteSyntax", "type"],
+      });
 
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Language created successfully";
-      responseApi.data = JSON.parse(JSON.stringify(language));
-      responseApi.transactionId = "createLanguage_";
+      if (newLanguage) {
+        const responseApi = new ResponseAPISuccess();
+        responseApi.message = "Language created successfully";
+        responseApi.data = JSON.parse(JSON.stringify(language));
+        responseApi.transactionId = "createLanguage_";
 
-      return res.status(200).json(responseApi);
+        return res.status(200).json(responseApi);
+      }
     } catch (e) {
       const responseApi = new ResponseAPIError();
       responseApi.message = "Internal Server Error";
@@ -197,17 +190,21 @@ export default class LanguageManagement {
             JSON.stringify(validate.errors)
         );
 
-      const response: QueryResult = await pool.query(
-        'UPDATE variamos.language SET name=$1, "abstractSyntax"=$2, "concreteSyntax"=$3, type=$4, "stateAccept"=$5 WHERE id = $6',
-        [
-          language.name,
-          language.abstractSyntax,
-          language.concreteSyntax,
-          language.type,
-          language.stateAccept,
-          language.id,
-        ]
+      let updateLanguage = await OrmLanguage.update(
+        {
+          name: language.name,
+          abstractSyntax: language.abstractSyntax,
+          concreteSyntax: language.concreteSyntax,
+          type: language.type,
+          stateAccept: language.stateAccept,
+        },
+        {
+          where: { id: language.id },
+        }
       );
+
+      if (updateLanguage.toString() === "0")
+        throw new Error("Something wrong, Language not found.");
 
       const responseApi = new ResponseAPISuccess();
       responseApi.message = "Language updated successfully";
@@ -228,20 +225,21 @@ export default class LanguageManagement {
     }
   };
 
-  deleteLanguage = async (req: Request, res: Response): Promise<Response> => {
+  deleteLanguage = async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
 
-      const response: QueryResult = await pool.query(
-        "DELETE FROM variamos.language WHERE id= $1;",
-        [id]
-      );
+      const deleteLanguage = (await OrmLanguage.destroy({
+        where: { id: id },
+      })) as Language;
 
-      const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Language deleted successfully";
-      responseApi.transactionId = "deleteLanguage_";
+      if (deleteLanguage) {
+        const responseApi = new ResponseAPISuccess();
+        responseApi.message = "Language deleted successfully";
+        responseApi.transactionId = "deleteLanguage_";
 
-      return res.status(200).json(responseApi);
+        return res.status(200).json(responseApi);
+      }
     } catch (e) {
       const responseApi = new ResponseAPIError();
       responseApi.message = "Internal Server Error";
