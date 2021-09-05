@@ -1,7 +1,7 @@
 {
-  "name": "variamos-ms-languages",
+  "name": "variamos-ms-restrictions",
   "version": "1.0.0",
-  "description": "Microservices for languages management",
+  "description": "Microservices for restrictions management",
   "main": "dist/Domain/Init/StartServiceUseCases.js",
   "scripts": {
     "start": "node ./dist/Domain/Init/StartServiceUseCases.js",
@@ -28,10 +28,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mauroagudeloz/VariaMosMicroservice.git"
+    "url": "git+https://github.com/mauroagudeloz/variamos_ms_restrictions.git"
   },
   "bugs": {
-    "url": "https://github.com/mauroagudeloz/VariaMosMicroservice/issues"
+    "url": "https://github.com/mauroagudeloz/variamos_ms_restrictions/issues"
   },
-  "homepage": "https://github.com/mauroagudeloz/VariaMosMicroservice#readme"
+  "homepage": "https://github.com/mauroagudeloz/variamos_ms_restrictions#readme"
 }

@@ -4,13 +4,13 @@ FROM node:alpine
 RUN apk update
 
 # create root application folder
-WORKDIR /variaMosLenguageService
+WORKDIR /variaMosRestrictionsService
 
-# copy configs to /variaMosLenguageService folder
+# copy configs to /variaMosRestrictionsService folder
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# copy source code to /variaMosLenguageService/src folder
+# copy source code to /variaMosRestrictionsService/src folder
 COPY ./ . 
 
 # # check files list
@@ -20,6 +20,6 @@ RUN npm install
 # RUN npm install -g ts-node
 RUN npm run build
 
-EXPOSE 4000
+EXPOSE 4003
 
 CMD [ "npm", "start" ]
