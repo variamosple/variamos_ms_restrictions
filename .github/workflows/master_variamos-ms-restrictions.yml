@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8034a7d1f12b4745af844b2f06025702 }}/magudeloz/variamos_ms_restrictions:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./src/Infraestructure/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
