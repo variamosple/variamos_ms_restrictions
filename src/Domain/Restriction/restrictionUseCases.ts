@@ -1,6 +1,6 @@
 import { json, Request, Response } from "express";
 import { QueryResult } from "pg";
-import Ajv from "ajv";
+import Ajv, { str } from "ajv";
 import { pool } from "../../DataProviders/dataBase/VariamosDB";
 import { RequestAPI, RequestApiSchema } from "../Init/entities/request";
 import {
@@ -41,7 +41,7 @@ export default class RestrictionManagement {
       let model: Model = new Model();
       model = Object.assign(model, req.body.data.model);
 
-      let configRestriction = {};
+      let configRestriction: any = {};
       configRestriction = Object.assign(
         configRestriction,
         req.body.data.restriction
@@ -50,21 +50,39 @@ export default class RestrictionManagement {
       //ALLOWED and DENIED
       let restrictionResponse = {
         state: "DENIED",
-        meesage: "Restriction applied by unique name",
+        message: "Restriction applied by unique name",
       };
 
-      const elementsFilter: Element[] = model.elements.filter(
-        (element) =>
-          element.name === element.name && element.type === element.type
-      );
+      let elemntsFound = 0;
+      for (let i = 0; i < model.elements.length; i++) {
+        const element: Element = model.elements[i];
 
-      if (elementsFilter.length <= 1) {
+        for (let a = 0; a < configRestriction.definition.elements.length; a++) {
+          const elementsGroup = configRestriction.definition.elements[a];
+          if (elementsGroup.includes(element.type)) {
+            for (let x = 0; x < model.elements.length; x++) {
+              const elementFind: Element = model.elements[x];
+              if (
+                element.id !== elementFind.id &&
+                element.name === elementFind.name &&
+                elementsGroup.includes(elementFind.type)
+              ) {
+                elemntsFound++;
+                break;
+              }
+            }
+          }
+        }
+        if (elemntsFound > 0) break;
+      }
+
+      if (elemntsFound === 0) {
         restrictionResponse.state = "ALLOWED";
-        restrictionResponse.meesage = "";
+        restrictionResponse.message = "";
       }
 
       const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Restriction unique name successfully";
+      responseApi.message = "Unique name restriction applied successfully";
       responseApi.data = JSON.parse(JSON.stringify(restrictionResponse));
       responseApi.transactionId = "uniqueNameRestriction_" + utils.generateId();
 
@@ -86,7 +104,9 @@ export default class RestrictionManagement {
     try {
       let validate = ajv.compile(RequestApiSchema);
       let valid = validate(req.body);
-      console.log(req.body.data.restriction);
+
+      console.log(req.body.data.restrictions);
+
       if (!valid)
         throw new Error(
           "Something wrong in request definition. Validate: " +
@@ -111,10 +131,8 @@ export default class RestrictionManagement {
       let configRestriction = {};
       configRestriction = Object.assign(
         configRestriction,
-        req.body.data.restriction
+        req.body.data.restrictions
       );
-
-      console.log(configRestriction);
 
       //ALLOWED and DENIED
       let restrictionResponse = {
