@@ -105,7 +105,103 @@ export default class RestrictionManagement {
       let validate = ajv.compile(RequestApiSchema);
       let valid = validate(req.body);
 
-      console.log(req.body.data.restrictions);
+      if (!valid)
+        throw new Error(
+          "Something wrong in request definition. Validate: " +
+            JSON.stringify(validate.errors)
+        );
+
+      try {
+        ajv.addKeyword("allowedKeyword");
+      } catch {}
+
+      validate = ajv.compile(ModelSchema);
+      valid = validate(req.body.data.model);
+      if (!valid)
+        throw new Error(
+          "Something wrong in data definition. Validate: " +
+            JSON.stringify(validate.errors)
+        );
+
+      let model: Model = new Model();
+      model = Object.assign(model, req.body.data.model);
+
+      let configRestriction: any = {};
+      configRestriction = Object.assign(
+        configRestriction,
+        req.body.data.restriction
+      );
+
+      //ALLOWED and DENIED
+      let restrictionResponse = {
+        state: "DENIED",
+        message: "Restriction applied by quantity element",
+      };
+
+      let message = restrictionResponse.message;
+
+      let elemntsFound = 0;
+
+      configRestriction.definition.forEach((object: any) => {
+        const quantityElement = model.elements.filter(
+          (element) => element.type === object.element
+        );
+
+        if (quantityElement.length > object.max) {
+          restrictionResponse.state = "DENIED";
+          elemntsFound++;
+          message =
+            message +
+            " - max quantity for " +
+            object.element +
+            " element is " +
+            object.max;
+          //DENIED
+        } else if (quantityElement.length < object.min) {
+          message =
+            message +
+            " - min quantity for " +
+            object.element +
+            " element is " +
+            object.min;
+          //ALLOWED
+
+          if (elemntsFound === 0) restrictionResponse.state = "ALLOWED";
+        }
+      });
+
+      if (elemntsFound === 0) {
+        restrictionResponse.state = "ALLOWED";
+        message !== restrictionResponse.message
+          ? (restrictionResponse.message = message)
+          : (restrictionResponse.message = "");
+      }
+
+      const responseApi = new ResponseAPISuccess();
+      responseApi.message = "Quantity element restriction applied successfully";
+      responseApi.data = JSON.parse(JSON.stringify(restrictionResponse));
+      responseApi.transactionId =
+        "quantityElementRestriction_" + utils.generateId();
+
+      return res.status(200).json(responseApi);
+    } catch (e) {
+      const responseApi = new ResponseAPIError();
+      responseApi.message = "Internal Server Error";
+      responseApi.errorCode = "03";
+      responseApi.data = JSON.parse(
+        JSON.stringify("{ messageError: " + e + " }")
+      );
+      responseApi.transactionId =
+        "quantityElementRestriction_" + utils.generateId();
+      console.log(JSON.stringify(responseApi));
+      return res.status(500).json(responseApi);
+    }
+  };
+
+  quantityTarget = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      let validate = ajv.compile(RequestApiSchema);
+      let valid = validate(req.body);
 
       if (!valid)
         throw new Error(
@@ -128,30 +224,61 @@ export default class RestrictionManagement {
       let model: Model = new Model();
       model = Object.assign(model, req.body.data.model);
 
-      let configRestriction = {};
+      console.log(model);
+
+      let configRestriction: any = {};
       configRestriction = Object.assign(
         configRestriction,
-        req.body.data.restrictions
+        req.body.data.restriction
       );
 
       //ALLOWED and DENIED
       let restrictionResponse = {
         state: "DENIED",
-        meesage: "Restriction applied by unique name",
+        message: "Restriction applied by quantity element",
       };
 
-      const elementsFilter: Element[] = model.elements.filter(
-        (element) =>
-          element.name === element.name && element.type === element.type
-      );
+      let message = restrictionResponse.message;
 
-      if (elementsFilter.length <= 1) {
+      let elemntsFound = 0;
+
+      configRestriction.definition.forEach((object: any) => {
+        const quantityElement = model.elements.filter(
+          (element) => element.type === object.element
+        );
+
+        if (quantityElement.length > object.max) {
+          restrictionResponse.state = "DENIED";
+          elemntsFound++;
+          message =
+            message +
+            " - max quantity for " +
+            object.element +
+            " element is " +
+            object.max;
+          //DENIED
+        } else if (quantityElement.length < object.min) {
+          message =
+            message +
+            " - min quantity for " +
+            object.element +
+            " element is " +
+            object.min;
+          //ALLOWED
+
+          if (elemntsFound === 0) restrictionResponse.state = "ALLOWED";
+        }
+      });
+
+      if (elemntsFound === 0) {
         restrictionResponse.state = "ALLOWED";
-        restrictionResponse.meesage = "";
+        message !== restrictionResponse.message
+          ? (restrictionResponse.message = message)
+          : (restrictionResponse.message = "");
       }
 
       const responseApi = new ResponseAPISuccess();
-      responseApi.message = "Restriction unique name successfully";
+      responseApi.message = "Quantity element restriction applied successfully";
       responseApi.data = JSON.parse(JSON.stringify(restrictionResponse));
       responseApi.transactionId =
         "quantityElementRestriction_" + utils.generateId();
@@ -165,7 +292,7 @@ export default class RestrictionManagement {
         JSON.stringify("{ messageError: " + e + " }")
       );
       responseApi.transactionId =
-        "quantityElementRestriction_" + utils.generateId;
+        "quantityElementRestriction_" + utils.generateId();
       console.log(JSON.stringify(responseApi));
       return res.status(500).json(responseApi);
     }
