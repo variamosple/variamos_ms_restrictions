@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8034a7d1f12b4745af844b2f06025702 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_2cbeeac5654f4e6ca2f48416f5621b1b }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_62a17cf6eb5d4d7ebd65aa35b33a8fc8 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_857aaf7362d94dc687870a185629ca47 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8034a7d1f12b4745af844b2f06025702 }}/magudeloz/variamos_ms_restrictions:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_62a17cf6eb5d4d7ebd65aa35b33a8fc8 }}/magudeloz/variamos_ms_restrictions:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'variamos-ms-restrictions'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_8539db68021c4e3f93ac20ec18a2b4a9 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8034a7d1f12b4745af844b2f06025702 }}/magudeloz/variamos_ms_restrictions:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_237073ba6bad4627a46d6c32fc624d90 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_62a17cf6eb5d4d7ebd65aa35b33a8fc8 }}/magudeloz/variamos_ms_restrictions:${{ github.sha }}'
