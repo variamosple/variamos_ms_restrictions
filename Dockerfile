@@ -10,13 +10,15 @@ WORKDIR /variaMosRestrictionsService
 COPY package*.json ./
 COPY tsconfig.json ./
 
+RUN npm install
+
 # copy source code to /variaMosRestrictionsService/src folder
 COPY ./ . 
 
 # # check files list
 # RUN ls -a
 
-RUN npm install
+#RUN npm install
 # RUN npm install -g ts-node
 RUN npm run build
 
