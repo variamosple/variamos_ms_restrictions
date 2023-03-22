@@ -35,6 +35,7 @@ export const ModelSchema = {
     elements: { type: "array" },
     relationships: { type: "array" },
     typeEngineering: { type: "string" },
+    constraints: { type: "string" }
   },
   // required: ["name", "abstractSyntax", "concreteSyntax", "type"],
   additionalProperties: false,
