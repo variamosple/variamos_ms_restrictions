@@ -4,6 +4,8 @@ const router = Router();
 
 let _RestrictionManagement = new RestrictionManagement();
 
+router.get("/version", _RestrictionManagement.getVersion);
+
 router.post("/restriction/unique_name", _RestrictionManagement.uniqueName);
 
 router.post(
